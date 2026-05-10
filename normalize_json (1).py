@@ -100,7 +100,6 @@ def analyze_normalized(df):
 def main():
     os.makedirs("data", exist_ok=True)
 
-    # Save sample JSON first
     with open("data/api_data.json", "w") as f:
         json.dump(SAMPLE_JSON, f, indent=2)
     print("Saved sample JSON to: data/api_data.json")
