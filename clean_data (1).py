@@ -18,38 +18,38 @@ def clean_transactions(df):
 
     print("\n--- Cleaning Steps ---")
 
-    # 1. Remove duplicates
+   
     before = len(df)
     df.drop_duplicates(subset=["transaction_id"], inplace=True)
     print(f"[1] Removed duplicates: {before - len(df)} rows dropped")
 
-    # 2. Drop rows missing critical fields
+   
     before = len(df)
     df.dropna(subset=["transaction_id", "merchant_id", "amount"], inplace=True)
     print(f"[2] Dropped missing critical fields: {before - len(df)} rows dropped")
 
-    # 3. Fix amount column — convert to numeric
+   
     df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
     df.dropna(subset=["amount"], inplace=True)
     print(f"[3] Cleaned 'amount' column to numeric")
 
-    # 4. Fix date column
+ 
     df["date"] = pd.to_datetime(df["date"], errors="coerce")
     df.dropna(subset=["date"], inplace=True)
     print(f"[4] Parsed 'date' column to datetime")
 
-    # 5. Standardize status values
+
     df["status"] = df["status"].str.strip().str.lower()
     valid_statuses = ["success", "failed", "pending", "refunded"]
     df = df[df["status"].isin(valid_statuses)]
     print(f"[5] Standardized 'status' column. Valid statuses: {valid_statuses}")
 
-    # 6. Remove negative or zero amounts
+   
     before = len(df)
     df = df[df["amount"] > 0]
     print(f"[6] Removed non-positive amounts: {before - len(df)} rows dropped")
 
-    # 7. Strip whitespace from string columns
+   
     str_cols = df.select_dtypes(include="object").columns
     for col in str_cols:
         df[col] = df[col].str.strip()
