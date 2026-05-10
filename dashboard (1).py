@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import os
 
-# ── Generate synthetic data if needed ──────────────────────────────────────────
+
 def get_data():
     os.makedirs("data", exist_ok=True)
     if not os.path.exists("data/transactions_cleaned.csv"):
@@ -38,7 +38,6 @@ def get_data():
     return df
 
 
-# ── Build Dashboard ─────────────────────────────────────────────────────────────
 def build_dashboard(df):
     fig = plt.figure(figsize=(18, 12), facecolor="#0f1117")
     fig.suptitle("QuickPay FinTech — Business Monitoring Dashboard",
@@ -60,7 +59,7 @@ def build_dashboard(df):
         for spine in ax.spines.values():
             spine.set_edgecolor("#333355")
 
-    # ── KPI Cards (top row) ────────────────────────────────────────
+   
     kpis = [
         ("Total Revenue", f"₹{df[df['status']=='success']['amount'].sum():,.0f}", ACCENT),
         ("Transactions", str(len(df)), BLUE),
@@ -79,7 +78,7 @@ def build_dashboard(df):
         ax.text(0.5, 0.25, label, ha="center", va="center",
                 fontsize=11, color=TEXT, transform=ax.transAxes)
 
-    # ── Revenue by Merchant (bar) ──────────────────────────────────
+   
     ax1 = fig.add_subplot(gs[1, :2])
     ax_style(ax1, "Revenue by Merchant (Successful Txns)")
     rev = df[df["status"] == "success"].groupby("merchant_id")["amount"].sum().sort_values(ascending=False)
@@ -88,7 +87,7 @@ def build_dashboard(df):
     ax1.set_xlabel("Merchant ID", color=TEXT, fontsize=8)
     ax1.yaxis.label.set_color(TEXT)
 
-    # ── Status Donut ───────────────────────────────────────────────
+   
     ax2 = fig.add_subplot(gs[1, 2])
     ax_style(ax2, "Transaction Status Split")
     status_counts = df["status"].value_counts()
@@ -103,7 +102,7 @@ def build_dashboard(df):
         at.set_color("white")
         at.set_fontsize(7)
 
-    # ── Daily Volume Trend (line) ──────────────────────────────────
+    
     ax3 = fig.add_subplot(gs[2, :2])
     ax_style(ax3, "Daily Transaction Volume Trend")
     daily = df.groupby("date")["amount"].sum()
@@ -112,7 +111,7 @@ def build_dashboard(df):
     ax3.set_ylabel("Volume (₹)", color=TEXT, fontsize=8)
     ax3.set_xlabel("Date", color=TEXT, fontsize=8)
 
-    # ── Failure Rate by Merchant ───────────────────────────────────
+    
     ax4 = fig.add_subplot(gs[2, 2])
     ax_style(ax4, "Failure Rate by Merchant (%)")
     failure_rate = (
