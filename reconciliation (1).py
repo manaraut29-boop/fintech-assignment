@@ -12,7 +12,7 @@ def load_data():
     """Load transactions and settlements data."""
     os.makedirs("data", exist_ok=True)
 
-    # Generate synthetic data if not present
+   
     if not os.path.exists("data/transactions_cleaned.csv"):
         print("Generating synthetic transaction data...")
         records = []
@@ -32,7 +32,8 @@ def load_data():
         txn_df = pd.read_csv("data/transactions_cleaned.csv")
         settlements = []
         for _, row in txn_df.iterrows():
-            # Introduce some mismatches intentionally
+         
+            
             settled_amount = row["amount"] if np.random.rand() > 0.15 else round(row["amount"] - np.random.uniform(1, 50), 2)
             settlements.append({
                 "transaction_id": row["transaction_id"],
@@ -51,12 +52,12 @@ def load_data():
 def reconcile(transactions, settlements):
     """Merge and compare transactions vs settlements."""
 
-    # Only reconcile successful transactions
+
     success_txns = transactions[transactions["status"] == "success"].copy()
 
     merged = success_txns.merge(settlements, on="transaction_id", how="left")
 
-    # Flag types
+   
     merged["is_missing_settlement"] = merged["settled_amount"].isna()
     merged["amount_mismatch"] = (
         ~merged["is_missing_settlement"] &
@@ -85,7 +86,7 @@ def generate_report(merged):
     print(f"Total Discrepancy : ₹{merged['discrepancy'].sum():,.2f}")
     print("============================================\n")
 
-    # Save mismatch report
+  
     issues = merged[merged["amount_mismatch"] | merged["is_missing_settlement"]].copy()
     issues["issue_type"] = np.where(
         issues["is_missing_settlement"], "Missing Settlement",
